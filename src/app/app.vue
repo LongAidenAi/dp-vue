@@ -4,6 +4,7 @@
         {{ post.title }} - 
         <small>{{ post.user.name }}</small>
     </div>
+    <div>{{ this.errorMessage }}</div>
 </template>
 
 <script>
@@ -12,13 +13,18 @@ export default {
     data() {
         return {
             name: 'dp-node',
-            posts: []
+            posts: [],
+            errorMessage: ''
         }
     },
     created() {
-        axios.get('http://localhost:3000/posts').then(response => {
+        axios.get('http://localhost:3000/post123').then(response => {
             console.log(response)
             this.posts = response.data
+        }).catch(error => {
+            console.log(error.message)
+            console.log(error.response)
+            this.errorMessage = error.message
         })
     }
 }
