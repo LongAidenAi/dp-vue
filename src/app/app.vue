@@ -1,11 +1,24 @@
 <template>
     <h3>{{ name }}</h3>
-    <UserLogin/>
-    <div>创建内容
 
-    </div>
-    <input type="text" v-model="title" @keyup.enter="createPost">
-    <div>{{ this.errorMessage }}</div>
+    <div>用户登录</div>
+    <UserLogin 
+    v-if="!isLoginIn" 
+    @login-success="onLoginSuccess" 
+    @login-error="onLoginError"/>
+    <div>----------------</div>
+
+    <div>创建内容</div>
+    <input 
+    v-if="isLoginIn"
+    type="text" 
+    v-model="title" 
+    @keyup.enter="createPost"
+    placeholder="请输入内容标题"
+    >
+    <div>---------------------</div>
+
+    <div>内容列表</div>
     <div v-for="post in posts" :key="post.id">
         <input 
         type="text" 
@@ -15,7 +28,10 @@
         <small>{{ post.user.name }}</small>
         <button @click="deletePost(post.id)">删除内容</button>
     </div>
-
+    <div>-----------------</div>
+    
+    <div>错误提醒</div>
+    <div>{{ this.errorMessage }}</div>
 </template>
 
 <script>
@@ -27,13 +43,14 @@ export default {
             name: 'dp-node',
             posts: [],
             errorMessage: '',
-            user: {
-                name: '用户3',
-                password: '123456'
-            },
             token: '',
             title: '',
             content: ''
+        }
+    },
+    computed: {
+        isLoginIn() {
+            return this.token ? true : false
         }
     },
     async created() {
@@ -43,17 +60,14 @@ export default {
         } catch (error) {
             this.errorMessage = error.message
         }
-
-        //用户登录
-        try {
-            const response = await apiHttpClient.post('/login',this.user)
-            this.token = response.data.token
-            console.log(response.data)
-        } catch (error) {
-            this.errorMessage = error.message
-        }
     },
     methods: {
+        onLoginSuccess(data) {
+            this.token = data.token
+        },
+        onLoginError(error) {
+            this.errorMessage = error.data.message
+        },
         async getPosts() {
             try {
                 const response = await apiHttpClient.get('/posts')
