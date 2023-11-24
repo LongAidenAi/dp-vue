@@ -9,6 +9,7 @@
         @keyup.enter="updatePost($event, post.id)">
         {{ post.title }} - {{ post.content }} -
         <small>{{ post.user.name }}</small>
+        <button @click="deletePost(post.id)">删除内容</button>
     </div>
 
 </template>
@@ -89,6 +90,20 @@ export default {
                     }
                 })
 
+                this.getPosts()
+            } catch (error) {
+                this.errorMessage = error.message
+            }
+        },
+        async deletePost(postId) {
+            try {
+                await apiHttpClient.delete(
+                    `/posts/${postId}`
+                ,{
+                    headers: {
+                        Authorization: `Bearer ${this.token}`
+                    }
+                })
                 this.getPosts()
             } catch (error) {
                 this.errorMessage = error.message
