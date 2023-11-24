@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import {axios} from '@/app/app.service'
 export default {
     data() {
         return {
@@ -19,7 +19,7 @@ export default {
     },
     async created() {
         try {
-            const response = await axios.get('http://localhost:3000/posts')
+            const response = await axios.get('/posts')
             this.posts = response.data
         } catch (error) {
             this.errorMessage = error.message
