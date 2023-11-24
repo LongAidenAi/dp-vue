@@ -1,7 +1,9 @@
 <template>
     <h3>{{ name }}</h3>
 
-    <div>用户登录</div>
+    <div v-if="currentUser">
+        <div>{{ currentUser.name }}</div>
+    </div>
     <UserLogin 
     v-if="!isLoginIn" 
     @login-success="onLoginSuccess" 
@@ -29,7 +31,7 @@
         <button @click="deletePost(post.id)">删除内容</button>
     </div>
     <div>-----------------</div>
-    
+
     <div>错误提醒</div>
     <div>{{ this.errorMessage }}</div>
 </template>
@@ -45,7 +47,8 @@ export default {
             errorMessage: '',
             token: '',
             title: '',
-            content: ''
+            content: '',
+            currentUser: null
         }
     },
     computed: {
@@ -62,8 +65,18 @@ export default {
         }
     },
     methods: {
+        async getCurrentUser(userId) {
+            try {
+                const response = await apiHttpClient.get(`/users/${userId}`)
+                this.currentUser = response.data
+            } catch (error) {
+                this.errorMessage = error.message
+            }
+        },
         onLoginSuccess(data) {
             this.token = data.token
+            console.log(data)
+            this.getCurrentUser(data.id)
         },
         onLoginError(error) {
             this.errorMessage = error.data.message

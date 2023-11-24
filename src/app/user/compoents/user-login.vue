@@ -22,12 +22,8 @@ import { apiHttpClient } from '@/app/app.service'
                         name: this.name,
                         password: this.password
                     })
-                    console.log(response.data)
-
                     this.$emit('login-success', response.data)
                 } catch (error) {
-                    console.log(error.response)
-
                     this.$emit('login-error', error.response)
                 }
 
