@@ -57,11 +57,17 @@ export default {
         }
     },
     async created() {
-        try {
-            const response = await apiHttpClient.get('/posts')
-            this.posts = response.data
-        } catch (error) {
-            this.errorMessage = error.message
+        this.getPosts()
+
+        const tid = localStorage.getItem('tid')
+        const uid = localStorage.getItem('uid')
+
+        if(tid) {
+            this.token = tid
+        }
+
+        if(uid) {
+            this.getCurrentUser(uid)
         }
     },
     methods: {
@@ -75,8 +81,11 @@ export default {
         },
         onLoginSuccess(data) {
             this.token = data.token
-            console.log(data)
             this.getCurrentUser(data.id)
+
+            localStorage.setItem('tid', data.token)
+            localStorage.setItem('uid', data.id)
+
         },
         onLoginError(error) {
             this.errorMessage = error.data.message
