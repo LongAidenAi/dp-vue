@@ -1,5 +1,9 @@
 <template>
     <h3>{{ name }}</h3>
+    <UserLogin/>
+    <div>创建内容
+
+    </div>
     <input type="text" v-model="title" @keyup.enter="createPost">
     <div>{{ this.errorMessage }}</div>
     <div v-for="post in posts" :key="post.id">
@@ -16,6 +20,7 @@
 
 <script>
 import {apiHttpClient} from '@/app/app.service'
+import UserLogin from '@/app/user/compoents/user-login.vue'
 export default {
     data() {
         return {
@@ -66,7 +71,6 @@ export default {
                         Authorization: `Bearer ${this.token}`
                     }
                 })
-                console.log(response)
 
                 this.title = ''
 
@@ -109,6 +113,9 @@ export default {
                 this.errorMessage = error.message
             }
         }
+    },
+    components: {
+        UserLogin
     }
 }
 </script>
